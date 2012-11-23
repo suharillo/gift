@@ -1,7 +1,9 @@
 package com.giftproject;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -32,7 +34,20 @@ public class GUI {
 
 		mainFrame = new JFrame("GIFT");
 		mainPanel = new JPanel(new MigLayout("", "[grow][300]", "[grow]"));
-
+		
+		jpLeft = new JPanel();
+		jpRight = new JPanel(new MigLayout("","[grow]","[grow][100]"));
+		jpLeft.setBorder(BorderFactory.createLineBorder(Color.black));
+		jpRight.setBorder(BorderFactory.createLineBorder(Color.black));
+		
+		jtaPreview = new JTextArea();
+		jtaPreview.setBorder(BorderFactory.createLineBorder(Color.black));
+		jbGenerate = new JButton("submit");
+		jpRight.add(jtaPreview, "grow, wrap");
+		jpRight.add(jbGenerate, "grow");
+		
+		mainPanel.add(jpLeft, "grow");
+		mainPanel.add(jpRight, "grow");
 		
 		
 		mainFrame.add(mainPanel);
