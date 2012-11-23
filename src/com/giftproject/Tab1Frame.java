@@ -1,7 +1,9 @@
 package com.giftproject;
 
 import java.awt.Color;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -83,6 +85,18 @@ public class Tab1Frame extends JPanel{
 
 	public String getQuestion(){
 		return jtaQuestion.getText();
+	}
+	
+	public String getSelectedRadioButton() {
+		for (Enumeration<AbstractButton> buttons = rbChoice.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                return button.getText();
+            }
+        }
+
+        return null;
 	}
 	
 }
