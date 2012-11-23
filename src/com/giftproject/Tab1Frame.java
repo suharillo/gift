@@ -48,8 +48,8 @@ public class Tab1Frame extends JPanel{
 		jtaQuestion = new JTextArea(5,1);
 		jtaQuestion.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		jrbTrue = new JRadioButton("True");
-		jrbFalse = new JRadioButton("False");
+		jrbTrue = new JRadioButton("T");
+		jrbFalse = new JRadioButton("F");
 		
 		jbPreview = new JButton("Preview");
 		rbChoice = new ButtonGroup();
@@ -97,6 +97,14 @@ public class Tab1Frame extends JPanel{
         }
 
         return null;
+	}
+
+	public JButton getJbPreview() {
+		return jbPreview;
+	}
+
+	public void setJbPreview(JButton jbPreview) {
+		this.jbPreview = jbPreview;
 	}
 	
 }

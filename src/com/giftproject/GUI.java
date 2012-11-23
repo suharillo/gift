@@ -2,6 +2,8 @@ package com.giftproject;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -22,7 +24,7 @@ public class GUI {
 	private JPanel jpRight;
 
 	private JTabbedPane jtpTabs; // sticked to jpLeft
-	private JPanel jpTab1;
+	private Tab1Frame jpTab1;
 	private JPanel jpTab2;
 	private JPanel jpTab3;
 	private JPanel jpTab4;
@@ -61,6 +63,8 @@ public class GUI {
 		mainPanel.add(jpLeft, "grow");
 		mainPanel.add(jpRight, "grow");
 		
+		addActionListeners();
+		
 		
 		mainFrame.add(mainPanel);
 		mainFrame.setMinimumSize(new Dimension(900, 400));
@@ -68,6 +72,36 @@ public class GUI {
 		mainFrame.setLocationRelativeTo(null); // place window in the centre of the screen
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
+	}
+
+	private void addActionListeners() {
+		jpTab1.getJbPreview().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+				StringBuilder sbGiftFormat = new StringBuilder();
+				
+				String strQName = jpTab1.getName();
+				String strQContent = jpTab1.getQuestion();
+				String strCorrect = jpTab1.getSelectedRadioButton();
+				String strTitle = setTitle(strQName);
+				String strAnswer = setAnswer(strCorrect);
+				
+				sbGiftFormat.append(strTitle+" "+strQContent+" "+strAnswer);
+				
+				jtaPreview.setText(sbGiftFormat.toString());
+			}
+		});
+		
+	}
+
+	protected String setAnswer(String strCorrect) {
+		return "{"+strCorrect+"}";
+	}
+
+	protected String setTitle(String strQName) {
+		return "::"+strQName+"::";
 	}
 
 }
