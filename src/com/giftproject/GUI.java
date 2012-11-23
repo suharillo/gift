@@ -21,11 +21,11 @@ public class GUI {
 	private JPanel jpLeft;
 	private JPanel jpRight;
 
-	private JTabbedPane jtp; // sticked to jpLeft
-	private JPanel jTab1;
-	private JPanel jTab2;
-	private JPanel jTab3;
-	private JPanel jTab4;
+	private JTabbedPane jtpTabs; // sticked to jpLeft
+	private JPanel jpTab1;
+	private JPanel jpTab2;
+	private JPanel jpTab3;
+	private JPanel jpTab4;
 
 	private JTextArea jtaPreview;
 	private JButton jbGenerate;
@@ -35,7 +35,7 @@ public class GUI {
 		mainFrame = new JFrame("GIFT");
 		mainPanel = new JPanel(new MigLayout("", "[grow][300]", "[grow]"));
 		
-		jpLeft = new JPanel();
+		jpLeft = new JPanel(new MigLayout("","[grow]","[grow]"));
 		jpRight = new JPanel(new MigLayout("","[grow]","[grow][100]"));
 		jpLeft.setBorder(BorderFactory.createLineBorder(Color.black));
 		jpRight.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -45,6 +45,18 @@ public class GUI {
 		jbGenerate = new JButton("submit");
 		jpRight.add(jtaPreview, "grow, wrap");
 		jpRight.add(jbGenerate, "grow");
+		
+		jtpTabs = new JTabbedPane();
+		jpLeft.add(jtpTabs, "grow");
+		jpTab1 = new Tab1Frame();
+		jpTab2 = new JPanel(new MigLayout());
+		jpTab3 = new JPanel(new MigLayout());
+		jpTab4 = new JPanel(new MigLayout());
+		
+		jtpTabs.addTab("Tab1", jpTab1);
+		jtpTabs.addTab("Tab2", jpTab2);
+		jtpTabs.addTab("Tab3", jpTab3);
+		jtpTabs.addTab("Tab4", jpTab4);
 		
 		mainPanel.add(jpLeft, "grow");
 		mainPanel.add(jpRight, "grow");
