@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -18,6 +20,10 @@ public class Tab2Frame extends JPanel {
 	private StringBuffer sb;
 	private JTextArea jtaQuestion;
 	private JTable table;
+	
+	private ArrayList<String> answer;
+	private ArrayList<Integer> percent;
+	private ArrayList<String> comments;
 
 	public Tab2Frame() {
 		setLayout(new MigLayout("", "[138.00,grow][grow]",
@@ -36,7 +42,7 @@ public class Tab2Frame extends JPanel {
 		JScrollPane scrollPane_1 = new JScrollPane();
 		add(scrollPane_1, "cell 0 3 2 1,grow");
 
-		jtaQuestion = new JTextArea(5,1);
+		jtaQuestion = new JTextArea(5, 1);
 		scrollPane_1.setViewportView(jtaQuestion);
 
 		JLabel lblCorrectAnswer = new JLabel("Correct Answer:");
@@ -64,17 +70,11 @@ public class Tab2Frame extends JPanel {
 		add(scrollPane, "cell 0 7 2 1,grow");
 
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-			},
-			new String[] {
-				"Answer", "%", "Comments"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				Object.class, Integer.class, Object.class
-			};
+		table.setModel(new DefaultTableModel(new Object[][] { { null, null,
+				null }, }, new String[] { "Answer", "%", "Comments" }) {
+			Class[] columnTypes = new Class[] { Object.class, Integer.class,
+					Object.class };
+
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
@@ -112,11 +112,35 @@ public class Tab2Frame extends JPanel {
 	}
 
 	private String setTitle(String strQName) {
-		return "::" + strQName + ":: ";
+		return ":: " + strQName + "\n";
 	}
 
 	private String setQuestion(String strQestion) {
-		return jtaQuestion + " ";
+		return ":: " + jtaQuestion + " {\n";
+	}
+	
+	private String setCorrectAnswer(String strCorrect) {
+		
+		return "=" + strCorrect + "\n";
+	}
+	
+	private String wrongAnswers() {
+		
+		String ANS = "";
+		
+		for(int i=0; i<table.getRowCount(); i++) {
+			
+			String ans = (String) table.getModel().getValueAt(i, 0);
+			
+			answer.add(ans);
+			percent.add((Integer) table.getModel().getValueAt(i, 1));
+			comments.add((String) table.getModel().getValueAt(i, 2));
+			ANS = "~%"+percent.get(i)+"%"+answer.get(i)+"#"+comments.get(i)+"\n";
+			
+		}
+		
+		return ANS;
+		
 	}
 
 	public void removeSelectedFromTable(JTable from) {
