@@ -51,7 +51,7 @@ public class GUI {
 		jtpTabs = new JTabbedPane();
 		jpLeft.add(jtpTabs, "grow");
 		jpTab1 = new Tab1Frame();
-		jpTab2 = new JPanel(new MigLayout());
+		jpTab2 = new Tab2Frame();
 		jpTab3 = new JPanel(new MigLayout());
 		jpTab4 = new JPanel(new MigLayout());
 		
