@@ -122,8 +122,8 @@ public class Tab2Frame extends JPanel {
 		return "::" + strQName + ":: ";
 	}
 
-	private String setQuestion(String strQestion) {
-		return strQestion + " { ";
+	public void setQuestion(String s) {
+		jtaQuestion.setText(s);
 	}
 
 	private String setCorrectAnswer(String strCorrect) {
@@ -242,5 +242,45 @@ public class Tab2Frame extends JPanel {
 
 		ans = convert(ans);
 		return ans + comm;
+	}
+
+	public JTable getTable() {
+		return table;
+	}
+
+	public void setTable(JTable table) {
+		this.table = table;
+	}
+
+	public JTable getTable_1() {
+		return table_1;
+	}
+
+	public void setTable_1(JTable table_1) {
+		this.table_1 = table_1;
+	}
+
+	public ArrayList<String> getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(ArrayList<String> answer) {
+		this.answer = answer;
+	}
+
+	public ArrayList<String> getPercent() {
+		return percent;
+	}
+
+	public void setPercent(ArrayList<String> percent) {
+		this.percent = percent;
+	}
+
+	public ArrayList<String> getComments() {
+		return comments;
+	}
+
+	public void setComments(ArrayList<String> comments) {
+		this.comments = comments;
 	}
 }

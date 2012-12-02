@@ -87,7 +87,7 @@ public class Tab1Frame extends JPanel{
 		return jtaQuestion.getText();
 	}
 	
-	public String getSelectedRadioButton() {
+	public String getSelectedRadioButtonText() {
 		for (Enumeration<AbstractButton> buttons = rbChoice.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 

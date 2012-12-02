@@ -2,21 +2,31 @@ package com.giftproject;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.regex.Pattern;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JScrollPane;
 
 public class GUI {
+	
+	private ArrayList<Object> qContent;
+	private ArrayList<JRadioButton> jrQuestions;
+	private ButtonGroup bgAll;
 
 	private JFrame mainFrame;
 	private JPanel mainPanel;
@@ -24,6 +34,8 @@ public class GUI {
 	// panels included in mainPanel
 	private JPanel jpLeft;
 	private JPanel jpMiddle;
+	private JPanel jpRight;
+	private JPanel jpRightTop;
 
 	private JTabbedPane jtpTabs; // sticked to jpLeft
 	private Tab1Frame jpTab1;
@@ -33,22 +45,48 @@ public class GUI {
 
 	public JTextArea jtaPreview;
 	private JButton jbGenerate;
+	private JButton jbDelete;
+	private JButton jbSave;
+	private JScrollPane scrollPane;
+	private JPanel jpQuestionList;
 
 	public GUI() {
+		
+		qContent = new ArrayList<Object>();
+		jrQuestions = new ArrayList<JRadioButton>();
+		bgAll = new ButtonGroup();
 
 		mainFrame = new JFrame("GIFT");
-		mainPanel = new JPanel(new MigLayout("", "[grow][300]", "[grow]"));
+		mainPanel = new JPanel(new MigLayout("", "[grow][300][300]", "[grow]"));
 		
 		jpLeft = new JPanel(new MigLayout("","[grow]","[grow]"));
 		jpMiddle = new JPanel(new MigLayout("","[grow]","[grow][100]"));
+		jpRight = new JPanel(new MigLayout("", "[grow][]", "[grow][100]"));
 		jpLeft.setBorder(BorderFactory.createLineBorder(Color.black));
 		jpMiddle.setBorder(BorderFactory.createLineBorder(Color.black));
+		jpRight.setBorder(BorderFactory.createLineBorder(Color.black));
 		
 		jtaPreview = new JTextArea();
 		jtaPreview.setBorder(BorderFactory.createLineBorder(Color.black));
 		jbGenerate = new JButton("submit");
 		jpMiddle.add(jtaPreview, "grow, wrap");
 		jpMiddle.add(jbGenerate, "grow");
+		
+		jpRightTop = new JPanel();
+		jpRightTop.setBorder(BorderFactory.createLineBorder(Color.black));
+		jbDelete = new JButton("delete");
+		jbSave = new JButton("save");
+		jpRight.add(jpRightTop, "cell 0 0 2 1,grow");
+		jpRightTop.setLayout(new MigLayout("", "[grow]", "[grow]"));
+		
+		scrollPane = new JScrollPane();
+		jpRightTop.add(scrollPane, "cell 0 0,grow");
+		
+		jpQuestionList = new JPanel();
+		scrollPane.setViewportView(jpQuestionList);
+		jpQuestionList.setLayout(new MigLayout("", "[]", "[]"));
+		jpRight.add(jbDelete, "cell 0 1,grow");
+		jpRight.add(jbSave,"cell 1 1,grow");
 		
 		jtpTabs = new JTabbedPane();
 		jpLeft.add(jtpTabs, "grow");
@@ -64,6 +102,7 @@ public class GUI {
 		
 		mainPanel.add(jpLeft, "grow");
 		mainPanel.add(jpMiddle, "grow");
+		mainPanel.add(jpRight, "grow");
 		
 		addActionListeners();
 		
@@ -86,7 +125,7 @@ public class GUI {
 				
 				String strQName = jpTab1.getName();
 				String strQContent = jpTab1.getQuestion() + " ";
-				String strCorrect = jpTab1.getSelectedRadioButton();
+				String strCorrect = jpTab1.getSelectedRadioButtonText();
 				String strTitle = "::"+strQName+"::";
 				String strAnswer = "{"+strCorrect+"}";
 				
@@ -140,6 +179,100 @@ public class GUI {
 				jtaPreview.setText(sbGiftFormat.toString());
 			}
 		});
+		
+		jbGenerate.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (jtpTabs.getSelectedIndex() == 0) {
+					QTrueFalse qtf = new QTrueFalse();
+					qtf.setTitle(jpTab1.getName());
+					qtf.setQuestion(jpTab1.getQuestion());
+					qtf.setValue(jpTab1.getSelectedRadioButtonText());
+					
+					qContent.add(qtf);
+				}
+				else if (jtpTabs.getSelectedIndex()==1) {
+					QMultipleChoice qmc = new QMultipleChoice();
+					qmc.setTitle(jpTab2.getName());
+					qmc.setQuestion(jpTab2.getJtaQuestion().getText());
+					qmc.setCorrectAnswer(jpTab2.getTable_1().getModel().getValueAt(0, 0).toString());
+					qmc.setCorrectComment(jpTab2.getTable_1().getModel().getValueAt(0, 1).toString());
+					qmc.setIncorrectAnswers(jpTab2.getAnswer());
+					qmc.setIncorrectComments(jpTab2.getComments());
+					qmc.setIncorrectPercent(jpTab2.getPercent());
+				}
+				
+				JRadioButton q = new JRadioButton("Q1");
+				q.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						int index = getSelectedIndex();
+						if(qContent.get(index).getClass() == QTrueFalse.class) {
+							QTrueFalse tempQ = (QTrueFalse)qContent.get(index);
+							jtpTabs.setSelectedIndex(0);
+							jpTab1.setName(tempQ.getTitle());
+							jpTab1.setQuestion(tempQ.getQuestion());
+							mainPanel.repaint();
+							mainPanel.revalidate();
+						}
+						else if(qContent.get(index).getClass() == QMultipleChoice.class) {
+							QMultipleChoice tempQ = (QMultipleChoice)qContent.get(index);
+							jtpTabs.setSelectedIndex(1);
+							jpTab2.setName(tempQ.getTitle());
+							jpTab2.setQuestion(tempQ.getQuestion());
+							jpTab2.setCorrectAnswer(tempQ.getCorrectAnswer());
+							jpTab2.setCorrectComment(tempQ.getCorrectComment());
+							jpT
+						}
+					}
+				});
+				bgAll.add(q);
+				jrQuestions.add(q);
+				repaintQuestions();
+			}
+		});
+		
+		jbDelete.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int index = getSelectedIndex();
+				if (index!=-1) {
+					JRadioButton btr = jrQuestions.get(index);
+					jrQuestions.remove(index);
+					bgAll.remove(btr);
+					qContent.remove(index);
+					repaintQuestions();
+				}
+				
+			}
+		});
+	}
+
+	protected int getSelectedIndex() {
+		int i = 0;
+		for (Enumeration<AbstractButton> buttons = bgAll.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                return i;
+            }
+            i++;
+        }
+
+        return -1;
+	}
+
+	protected void repaintQuestions() {
+		
+		jpQuestionList.removeAll();
+		for(JRadioButton rb : jrQuestions) {
+			jpQuestionList.add(rb, "wrap");
+		}
+		jpQuestionList.repaint();
+		jpQuestionList.revalidate();
 	}
 
 	protected String setAnswers(String wrongAnswers) {
