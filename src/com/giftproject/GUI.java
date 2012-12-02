@@ -23,13 +23,13 @@ public class GUI {
 
 	// panels included in mainPanel
 	private JPanel jpLeft;
-	private JPanel jpRight;
+	private JPanel jpMiddle;
 
 	private JTabbedPane jtpTabs; // sticked to jpLeft
 	private Tab1Frame jpTab1;
 	private Tab2Frame jpTab2;
 	private Tab3Frame jpTab3;
-	private JPanel jpTab4;
+	private Tab4Frame jpTab4;
 
 	public JTextArea jtaPreview;
 	private JButton jbGenerate;
@@ -40,30 +40,30 @@ public class GUI {
 		mainPanel = new JPanel(new MigLayout("", "[grow][300]", "[grow]"));
 		
 		jpLeft = new JPanel(new MigLayout("","[grow]","[grow]"));
-		jpRight = new JPanel(new MigLayout("","[grow]","[grow][100]"));
+		jpMiddle = new JPanel(new MigLayout("","[grow]","[grow][100]"));
 		jpLeft.setBorder(BorderFactory.createLineBorder(Color.black));
-		jpRight.setBorder(BorderFactory.createLineBorder(Color.black));
+		jpMiddle.setBorder(BorderFactory.createLineBorder(Color.black));
 		
 		jtaPreview = new JTextArea();
 		jtaPreview.setBorder(BorderFactory.createLineBorder(Color.black));
 		jbGenerate = new JButton("submit");
-		jpRight.add(jtaPreview, "grow, wrap");
-		jpRight.add(jbGenerate, "grow");
+		jpMiddle.add(jtaPreview, "grow, wrap");
+		jpMiddle.add(jbGenerate, "grow");
 		
 		jtpTabs = new JTabbedPane();
 		jpLeft.add(jtpTabs, "grow");
 		jpTab1 = new Tab1Frame();
 		jpTab2 = new Tab2Frame();
 		jpTab3 = new Tab3Frame();
-		jpTab4 = new JPanel(new MigLayout());
+		jpTab4 = new Tab4Frame();
 		
 		jtpTabs.addTab("True/False", jpTab1);
 		jtpTabs.addTab("Multiple Choice", jpTab2);
 		jtpTabs.addTab("Matching", jpTab3);
-		jtpTabs.addTab("Tab4", jpTab4);
+		jtpTabs.addTab("Short", jpTab4);
 		
 		mainPanel.add(jpLeft, "grow");
-		mainPanel.add(jpRight, "grow");
+		mainPanel.add(jpMiddle, "grow");
 		
 		addActionListeners();
 		
@@ -105,7 +105,7 @@ public class GUI {
 				String title = setTitle(jpTab2.convert(jpTab2.getJtfTitle().getText()));
 				String question = setQuestion(jpTab2.convert(jpTab2.getJtaQuestion().getText()));
 				String correctAnswer = setCorrectAnswer(jpTab2.correctAnswer());
-				String wrongAnswers = setWrongAnswers(jpTab2.wrongAnswers());
+				String wrongAnswers = setAnswers(jpTab2.wrongAnswers());
 				sbGiftFormat.append(title + question + " {\n"+correctAnswer + wrongAnswers + "}");
 				
 				jtaPreview.setText(sbGiftFormat.toString());
@@ -126,15 +126,24 @@ public class GUI {
 				jtaPreview.setText(sbGiftFormat.toString());
 			}
 		});
+		
+		jpTab4.getBtnPreview().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				StringBuilder sbGiftFormat = new StringBuilder();
+				String title = setTitle(jpTab4.convert(jpTab4.getJtfTitle().getText()));
+				String question = setQuestion(jpTab4.convert(jpTab4.getJtaQuestion().getText()));
+				String answers = setAnswers(jpTab4.answers());
+				sbGiftFormat.append(title + question + " {\n"+ answers + "}");
+				
+				jtaPreview.setText(sbGiftFormat.toString());
+			}
+		});
 	}
 
-	protected String setWrongAnswers(String wrongAnswers) {
+	protected String setAnswers(String wrongAnswers) {
 		return wrongAnswers;
-	}
-
-	protected String setAnswer(String strCorrect) {
-
-		return "{"+strCorrect+"}";
 	}
 
 	private String setTitle(String strQName) {
