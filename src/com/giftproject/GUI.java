@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -25,11 +27,11 @@ public class GUI {
 
 	private JTabbedPane jtpTabs; // sticked to jpLeft
 	private Tab1Frame jpTab1;
-	private JPanel jpTab2;
-	private JPanel jpTab3;
+	private Tab2Frame jpTab2;
+	private Tab3Frame jpTab3;
 	private JPanel jpTab4;
 
-	private JTextArea jtaPreview;
+	public JTextArea jtaPreview;
 	private JButton jbGenerate;
 
 	public GUI() {
@@ -52,12 +54,12 @@ public class GUI {
 		jpLeft.add(jtpTabs, "grow");
 		jpTab1 = new Tab1Frame();
 		jpTab2 = new Tab2Frame();
-		jpTab3 = new JPanel(new MigLayout());
+		jpTab3 = new Tab3Frame();
 		jpTab4 = new JPanel(new MigLayout());
 		
-		jtpTabs.addTab("Tab1", jpTab1);
-		jtpTabs.addTab("Tab2", jpTab2);
-		jtpTabs.addTab("Tab3", jpTab3);
+		jtpTabs.addTab("True/False", jpTab1);
+		jtpTabs.addTab("Multiple Choice", jpTab2);
+		jtpTabs.addTab("Matching", jpTab3);
 		jtpTabs.addTab("Tab4", jpTab4);
 		
 		mainPanel.add(jpLeft, "grow");
@@ -66,8 +68,8 @@ public class GUI {
 		addActionListeners();
 		
 		
-		mainFrame.add(mainPanel);
-		mainFrame.setMinimumSize(new Dimension(900, 400));
+		mainFrame.getContentPane().add(mainPanel);
+		mainFrame.setMinimumSize(new Dimension(900, 500));
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null); // place window in the centre of the screen
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,10 +85,10 @@ public class GUI {
 				StringBuilder sbGiftFormat = new StringBuilder();
 				
 				String strQName = jpTab1.getName();
-				String strQContent = jpTab1.getQuestion();
+				String strQContent = jpTab1.getQuestion() + " ";
 				String strCorrect = jpTab1.getSelectedRadioButton();
-				String strTitle = setTitle(strQName);
-				String strAnswer = setAnswer(strCorrect);
+				String strTitle = "::"+strQName+"::";
+				String strAnswer = "{"+strCorrect+"}";
 				
 				sbGiftFormat.append(strTitle+" "+strQContent+" "+strAnswer);
 				
@@ -94,14 +96,58 @@ public class GUI {
 			}
 		});
 		
+		jpTab2.getBtnPreview().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				StringBuilder sbGiftFormat = new StringBuilder();
+				String title = setTitle(jpTab2.convert(jpTab2.getJtfTitle().getText()));
+				String question = setQuestion(jpTab2.convert(jpTab2.getJtaQuestion().getText()));
+				String correctAnswer = setCorrectAnswer(jpTab2.correctAnswer());
+				String wrongAnswers = setWrongAnswers(jpTab2.wrongAnswers());
+				sbGiftFormat.append(title + question + " {\n"+correctAnswer + wrongAnswers + "}");
+				
+				jtaPreview.setText(sbGiftFormat.toString());
+				
+			}
+		});
+		
+		jpTab3.getBtnPreview().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				StringBuilder sbGiftFormat = new StringBuilder();
+				String title = setTitle(jpTab3.convert(jpTab3.getJtfTitle().getText()));
+				String question = setQuestion(jpTab3.convert(jpTab3.getJtaQuestion().getText()));
+				String answers = jpTab3.setAnswers();
+				sbGiftFormat.append(title+question+" {\n"+answers+"}");
+				
+				jtaPreview.setText(sbGiftFormat.toString());
+			}
+		});
+	}
+
+	protected String setWrongAnswers(String wrongAnswers) {
+		return wrongAnswers;
 	}
 
 	protected String setAnswer(String strCorrect) {
+
 		return "{"+strCorrect+"}";
 	}
 
-	protected String setTitle(String strQName) {
-		return "::"+strQName+"::";
+	private String setTitle(String strQName) {
+		return "::" + strQName + "::";
+	}
+	
+	private String setQuestion(String strQestion) {
+		return strQestion;
+	}
+
+	private String setCorrectAnswer(String strAnswer) {
+		return "=" + strAnswer + "\n";
+		
 	}
 
 }
