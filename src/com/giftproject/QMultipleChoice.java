@@ -13,7 +13,11 @@ public class QMultipleChoice {
 	private ArrayList<String> incorrectPercent;
 	
 	public QMultipleChoice() {
-		// TODO Auto-generated constructor stub
+		incorrectAnswers = new ArrayList<String>();
+		incorrectComments = new ArrayList<String>();
+		incorrectPercent = new ArrayList<String>();
+		
+		System.out.println(incorrectAnswers.size());
 	}
 
 	public String getTitle() {
@@ -21,7 +25,10 @@ public class QMultipleChoice {
 	}
 
 	public void setTitle(String title) {
-		this.title = title;
+		if(title == null)
+			title = "";
+		else
+			this.title = title;
 	}
 
 	public String getQuestion() {
@@ -29,7 +36,10 @@ public class QMultipleChoice {
 	}
 
 	public void setQuestion(String question) {
-		this.question = question;
+		if(question == null)
+			question = "";
+		else
+			this.question = question;
 	}
 
 	public String getCorrectAnswer() {
@@ -37,7 +47,10 @@ public class QMultipleChoice {
 	}
 
 	public void setCorrectAnswer(String correctAnswer) {
-		CorrectAnswer = correctAnswer;
+		if(correctAnswer == null)
+			correctAnswer = "";
+		else
+			CorrectAnswer = correctAnswer;
 	}
 
 	public String getCorrectComment() {
@@ -45,7 +58,10 @@ public class QMultipleChoice {
 	}
 
 	public void setCorrectComment(String correctComment) {
-		CorrectComment = correctComment;
+		if(correctComment == null)
+			correctComment = "";
+		else
+			CorrectComment = correctComment;
 	}
 
 	public ArrayList<String> getIncorrectAnswers() {
