@@ -59,26 +59,26 @@ public class Tab3Frame extends JPanel {
 		table.getColumnModel().getColumn(1).setPreferredWidth(200);
 		scrollPane_1.setMaximumSize(new Dimension(1000, 130));
 		scrollPane_1.setViewportView(table);
-						
-								JButton btnDelete = new JButton("<- del row ->");
-								btnDelete.addMouseListener(new MouseAdapter() {
-									@Override
-									public void mouseClicked(MouseEvent e) {
-										removeSelectedFromTable(table);
-									}
-								});
-								
-										JButton btnAdd = new JButton("<- add row ->");
-										btnAdd.addMouseListener(new MouseAdapter() {
-											@Override
-											public void mouseClicked(MouseEvent arg0) {
-												DefaultTableModel model = (DefaultTableModel) table.getModel();
-												model.addRow(new Object[] {});
-											}
-										});
-										add(btnAdd, "flowx,cell 2 6,alignx right,aligny top");
-								add(btnDelete, "cell 2 6,alignx right,aligny top");
-		
+
+		JButton btnDelete = new JButton("<- del row ->");
+		btnDelete.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				removeSelectedFromTable(table);
+			}
+		});
+
+		JButton btnAdd = new JButton("<- add row ->");
+		btnAdd.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				model.addRow(new Object[] {});
+			}
+		});
+		add(btnAdd, "flowx,cell 2 6,alignx right,aligny top");
+		add(btnDelete, "cell 2 6,alignx right,aligny top");
+
 		JButton button = new JButton("<- clear all ->");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -86,10 +86,10 @@ public class Tab3Frame extends JPanel {
 		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		add(button, "cell 1 7,growx");
-		
-				btnPreview = new JButton("<- previev ->");
-				btnPreview.setFont(new Font("Tahoma", Font.PLAIN, 20));
-				add(btnPreview, "cell 1 8,growx");
+
+		btnPreview = new JButton("<- previev ->");
+		btnPreview.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		add(btnPreview, "cell 1 8,growx");
 
 	}
 
@@ -148,7 +148,7 @@ public class Tab3Frame extends JPanel {
 		for (int i = 0; i < table.getRowCount(); i++) {
 			String m1 = (String) table.getModel().getValueAt(i, 0);
 			if (m1 == null)
-				m1="";
+				m1 = "";
 			m1 = convert(m1);
 			String m2 = (String) table.getModel().getValueAt(i, 1);
 			if (m2 == null)
@@ -158,6 +158,34 @@ public class Tab3Frame extends JPanel {
 			finalString = finalString + "=" + m1 + " -> " + m2 + "\n";
 		}
 		return finalString;
+	}
+
+	public ArrayList<String> getAnswer1() {
+
+		ArrayList<String> answer = new ArrayList<String>();
+		for (int i = 0; i < table.getModel().getRowCount(); i++) {
+			if (!((table.getModel().getValueAt(i, 0)) == null)) {
+				answer.add(table.getModel().getValueAt(i, 0).toString());
+			}
+			else
+				answer.add("");
+		}
+		return answer;
+
+	}
+	
+	public ArrayList<String> getAnswer2() {
+
+		ArrayList<String> answer = new ArrayList<String>();
+		for (int i = 0; i < table.getModel().getRowCount(); i++) {
+			if (!((table.getModel().getValueAt(i, 1)) == null)) {
+				answer.add(table.getModel().getValueAt(i, 1).toString());
+			}
+			else
+				answer.add("");
+		}
+		return answer;
+
 	}
 
 }

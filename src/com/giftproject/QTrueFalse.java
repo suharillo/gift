@@ -5,6 +5,7 @@ public class QTrueFalse{
 	private String value;
 	private String title;
 	private String question;
+	private String content = "";
 	
 	private static int ID = 1;
 
@@ -42,6 +43,18 @@ public class QTrueFalse{
 
 	public static void setID(int iD) {
 		ID = iD;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getValue() {
+		return value;
 	}
 
 }

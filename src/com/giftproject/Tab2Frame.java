@@ -298,7 +298,11 @@ public class Tab2Frame extends JPanel {
 	public ArrayList<String> getAnswer() {
 		ArrayList<String> answer = new ArrayList<String>();
 		for (int i=0; i<table_wrong.getModel().getRowCount();i++) {
-			answer.add(table_wrong.getModel().getValueAt(i, 0).toString());
+			if(!((table_wrong.getModel().getValueAt(i, 1))==null)) {
+				answer.add(table_wrong.getModel().getValueAt(i, 0).toString());
+			}
+			else
+				answer.add("");
 		}
 		return answer;
 	}
@@ -317,6 +321,8 @@ public class Tab2Frame extends JPanel {
 				String percentValue = table_wrong.getModel().getValueAt(i, 1).toString();
 				percent.add(percentValue);
 			}
+			else
+				percent.add("");
 			
 		}
 		return percent;
@@ -331,7 +337,11 @@ public class Tab2Frame extends JPanel {
 	public ArrayList<String> getComments() {
 		ArrayList<String> comments = new ArrayList<String>();
 		for (int i=0; i<table_wrong.getModel().getRowCount();i++) {
-			comments.add(table_wrong.getModel().getValueAt(i, 2).toString());
+			if(!((table_wrong.getModel().getValueAt(i, 1))==null)) {
+				comments.add(table_wrong.getModel().getValueAt(i, 2).toString());
+			}
+			else
+				comments.add("");
 		}
 		return comments;
 	}

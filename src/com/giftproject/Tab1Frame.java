@@ -18,12 +18,14 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.Font;
 
 
 public class Tab1Frame extends JPanel{
 	private JLabel jlbName;
-	private JTextField jtfName;
+	private JTextField jtfTitle;
 	private JLabel jlbQuestion;
 	
 	private JLabel jlbAnswer;
@@ -46,8 +48,8 @@ public class Tab1Frame extends JPanel{
 		jlbName = new JLabel("-= title =-");
 		add(jlbName, "cell 0 0,alignx center");
 		
-		jtfName = new JTextField(30);
-		add(jtfName, "cell 0 1,growx");
+		jtfTitle = new JTextField(30);
+		add(jtfTitle, "cell 0 1,growx");
 		jlbQuestion = new JLabel("-= question =-");
 		add(jlbQuestion, "cell 0 2,alignx center");
 		
@@ -72,27 +74,35 @@ public class Tab1Frame extends JPanel{
 		
 		jbPreview = new JButton("<- preview ->");
 		jbPreview.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		jbPreview.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		
 		jbClearTab1 = new JButton("<- clear all ->");
 		jbClearTab1.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		add(jbClearTab1, "cell 0 6,alignx center");
 		add(jbPreview, "cell 0 7,alignx center,aligny top");
+		
+		jbClearTab1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				setTitle("");
+				setQuestion("");
+				
+				repaint();
+				revalidate();
+			}
+		});
+		
 	}
 	
-	public void setName(String s) {
-		jtfName.setText(s);
+	public void setTitle(String s) {
+		jtfTitle.setText(s);
 	}
 	
 	public void setQuestion(String s) {
 		jtaQuestion.setText(s);
 	}
 	
-	public String getName(){
-		return jtfName.getText();
+	public String getTitle() {
+		return jtfTitle.getText();
 	}
 
 	public String getQuestion(){
@@ -118,5 +128,7 @@ public class Tab1Frame extends JPanel{
 	public void setJbPreview(JButton jbPreview) {
 		this.jbPreview = jbPreview;
 	}
+	
+	
 	
 }
