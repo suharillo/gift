@@ -14,6 +14,9 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Tab3Frame extends JPanel {
 	private JTextField jtfTitle;
@@ -22,31 +25,30 @@ public class Tab3Frame extends JPanel {
 	private JTextArea jtaQuestion;
 
 	public Tab3Frame() {
-		setLayout(new MigLayout("", "[grow][grow]",
-				"[][][][grow][][center][][]"));
+		setLayout(new MigLayout("", "[][][]", "[][][][][][center][][][]"));
 
-		JLabel lblTitle = new JLabel("Title:");
-		add(lblTitle, "cell 0 0");
+		JLabel lblTitle = new JLabel("-= title =-");
+		add(lblTitle, "cell 1 0 2 1,alignx center");
 
 		jtfTitle = new JTextField();
-		add(jtfTitle, "cell 0 1 2 1,growx");
+		add(jtfTitle, "cell 1 1 2 1,growx");
 		jtfTitle.setColumns(10);
 
-		JLabel lblQuestion = new JLabel("Question:");
-		add(lblQuestion, "cell 0 2 2 1");
+		JLabel lblQuestion = new JLabel("-= question =-");
+		add(lblQuestion, "cell 1 2 2 1,alignx center");
 
 		JScrollPane scrollPane = new JScrollPane();
-		add(scrollPane, "cell 0 3 2 1,grow");
+		add(scrollPane, "cell 1 3 2 1,grow");
 
 		jtaQuestion = new JTextArea();
 		jtaQuestion.setRows(5);
 		scrollPane.setViewportView(jtaQuestion);
 
-		JLabel lblMatchingAnswers = new JLabel("Matching Answers:");
-		add(lblMatchingAnswers, "cell 0 4");
+		JLabel lblMatchingAnswers = new JLabel("-= matchig answers =-");
+		add(lblMatchingAnswers, "cell 0 4 3 1,alignx center");
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		add(scrollPane_1, "cell 0 5 2 1,growx,aligny top");
+		add(scrollPane_1, "cell 1 5 2 1,growx,aligny top");
 
 		table = new JTable();
 		table.setModel(new DefaultTableModel(new Object[][] { { null, null },
@@ -57,28 +59,37 @@ public class Tab3Frame extends JPanel {
 		table.getColumnModel().getColumn(1).setPreferredWidth(200);
 		scrollPane_1.setMaximumSize(new Dimension(1000, 130));
 		scrollPane_1.setViewportView(table);
-
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				removeSelectedFromTable(table);
+						
+								JButton btnDelete = new JButton("<- del row ->");
+								btnDelete.addMouseListener(new MouseAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										removeSelectedFromTable(table);
+									}
+								});
+								
+										JButton btnAdd = new JButton("<- add row ->");
+										btnAdd.addMouseListener(new MouseAdapter() {
+											@Override
+											public void mouseClicked(MouseEvent arg0) {
+												DefaultTableModel model = (DefaultTableModel) table.getModel();
+												model.addRow(new Object[] {});
+											}
+										});
+										add(btnAdd, "flowx,cell 2 6,alignx right,aligny top");
+								add(btnDelete, "cell 2 6,alignx right,aligny top");
+		
+		JButton button = new JButton("<- clear all ->");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		add(btnDelete, "flowx,cell 1 6,alignx right,aligny top");
-
-		JButton btnAdd = new JButton("Add");
-		btnAdd.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				DefaultTableModel model = (DefaultTableModel) table.getModel();
-				model.addRow(new Object[] {});
-			}
-		});
-		add(btnAdd, "cell 1 6,alignx right,aligny top");
-
-		btnPreview = new JButton("Preview");
-		add(btnPreview, "cell 0 7");
+		button.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		add(button, "cell 1 7,growx");
+		
+				btnPreview = new JButton("<- previev ->");
+				btnPreview.setFont(new Font("Tahoma", Font.PLAIN, 20));
+				add(btnPreview, "cell 1 8,growx");
 
 	}
 

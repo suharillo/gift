@@ -12,6 +12,8 @@ public class QMultipleChoice {
 	private ArrayList<String> incorrectComments;
 	private ArrayList<String> incorrectPercent;
 	
+	private String content = "";
+	
 	public QMultipleChoice() {
 		incorrectAnswers = new ArrayList<String>();
 		incorrectComments = new ArrayList<String>();
@@ -86,6 +88,14 @@ public class QMultipleChoice {
 
 	public void setIncorrectPercent(ArrayList<String> incorrectPercent) {
 		this.incorrectPercent = incorrectPercent;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 }

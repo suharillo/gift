@@ -15,15 +15,16 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JScrollPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 
 public class Tab1Frame extends JPanel{
-
-	private JPanel jpContent;
 	private JLabel jlbName;
 	private JTextField jtfName;
 	private JLabel jlbQuestion;
-	private JTextArea jtaQuestion;
 	
 	private JLabel jlbAnswer;
 	private ButtonGroup rbChoice;
@@ -34,41 +35,52 @@ public class Tab1Frame extends JPanel{
 	private JButton jbPreview;
 	
 	private JPanel radioPanel = new JPanel();
+	private JScrollPane scrollPane;
+	private JTextArea jtaQuestion;
+	private JButton jbClearTab1;
 	
 	public Tab1Frame() {
-		setLayout(new MigLayout("","[grow]","[]"));
+		setLayout(new MigLayout("", "[grow]", "[][][][][][][][]"));
+		rbChoice = new ButtonGroup();
 		
-		jpContent = new JPanel(new MigLayout());
-		
-		jlbName = new JLabel("Question Title");
-		jlbQuestion = new JLabel("Question:");
-		jlbAnswer = new JLabel("Correct answer:");
+		jlbName = new JLabel("-= title =-");
+		add(jlbName, "cell 0 0,alignx center");
 		
 		jtfName = new JTextField(30);
-		jtaQuestion = new JTextArea(5,1);
-		jtaQuestion.setBorder(BorderFactory.createLineBorder(Color.black));
+		add(jtfName, "cell 0 1,growx");
+		jlbQuestion = new JLabel("-= question =-");
+		add(jlbQuestion, "cell 0 2,alignx center");
+		
+		scrollPane = new JScrollPane();
+		add(scrollPane, "cell 0 3,grow");
+		
+		jtaQuestion = new JTextArea();
+		jtaQuestion.setRows(5);
+		scrollPane.setViewportView(jtaQuestion);
+		jlbAnswer = new JLabel("-= correct answer =-");
+		add(jlbAnswer, "cell 0 4,alignx center");
 		
 		jrbTrue = new JRadioButton("T");
 		jrbFalse = new JRadioButton("F");
-		
-		jbPreview = new JButton("Preview");
-		rbChoice = new ButtonGroup();
 		rbChoice.add(jrbTrue);
 		rbChoice.add(jrbFalse);
 		
 		radioPanel = new JPanel();
+		add(radioPanel, "cell 0 5,alignx center");
 		radioPanel.add(jrbTrue);
 		radioPanel.add(jrbFalse);
 		
-		jpContent.add(jlbName, "wrap");
-		jpContent.add(jtfName, "wrap");
-		jpContent.add(jlbQuestion, "wrap");
-		jpContent.add(jtaQuestion, "grow, wrap");
-		jpContent.add(jlbAnswer, "wrap");
-		jpContent.add(radioPanel, "wrap");
-		jpContent.add(jbPreview);
+		jbPreview = new JButton("<- preview ->");
+		jbPreview.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		jbPreview.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		
-		add(jpContent);
+		jbClearTab1 = new JButton("<- clear all ->");
+		jbClearTab1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		add(jbClearTab1, "cell 0 6,alignx center");
+		add(jbPreview, "cell 0 7,alignx center,aligny top");
 	}
 	
 	public void setName(String s) {

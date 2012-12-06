@@ -22,6 +22,8 @@ import javax.swing.JTextArea;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 public class GUI {
 
@@ -50,6 +52,9 @@ public class GUI {
 	private JButton jbSave;
 	private JScrollPane scrollPane;
 	private JPanel jpQuestionList;
+	private JLabel lblAllQuestions;
+	private JLabel lblPreviewTitle;
+	private JButton btnNewButton;
 
 	public GUI() {
 
@@ -61,8 +66,8 @@ public class GUI {
 		mainPanel = new JPanel(new MigLayout("", "[grow][300][300]", "[grow]"));
 
 		jpLeft = new JPanel(new MigLayout("", "[grow]", "[grow]"));
-		jpMiddle = new JPanel(new MigLayout("", "[grow]", "[grow][100]"));
-		jpRight = new JPanel(new MigLayout("", "[grow][]", "[grow][100]"));
+		jpMiddle = new JPanel(new MigLayout("", "[grow]", "[][grow][151]"));
+		jpRight = new JPanel(new MigLayout("", "[grow][]", "[][grow][100px:n:100px][45px]"));
 		jpLeft.setBorder(BorderFactory.createLineBorder(Color.black));
 		jpMiddle.setBorder(BorderFactory.createLineBorder(Color.black));
 		jpRight.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -70,24 +75,36 @@ public class GUI {
 		jtaPreview = new JTextArea();
 		jtaPreview.setBorder(BorderFactory.createLineBorder(Color.black));
 		jbGenerate = new JButton("submit");
-		jpMiddle.add(jtaPreview, "grow, wrap");
-		jpMiddle.add(jbGenerate, "grow");
+		jbGenerate.setForeground(Color.MAGENTA);
+		jbGenerate.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		
+		lblPreviewTitle = new JLabel("-= preview =-");
+		jpMiddle.add(lblPreviewTitle, "cell 0 0,alignx center");
+		jpMiddle.add(jtaPreview, "cell 0 1,grow");
+		jpMiddle.add(jbGenerate, "cell 0 2,grow");
 
 		jpRightTop = new JPanel();
 		jpRightTop.setBorder(BorderFactory.createLineBorder(Color.black));
 		jbDelete = new JButton("delete");
+		jbDelete.setForeground(Color.RED);
+		jbDelete.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		jbSave = new JButton("save");
-		jpRight.add(jpRightTop, "cell 0 0 2 1,grow");
-		jpRightTop.setLayout(new MigLayout("", "[grow]", "[grow]"));
+		jbSave.setForeground(Color.BLUE);
+		jbSave.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		
+		lblAllQuestions = new JLabel("-= questions =-");
+		jpRight.add(lblAllQuestions, "cell 0 0");
+		jpRight.add(jpRightTop, "cell 0 1 2 1,grow");
+		jpRightTop.setLayout(new MigLayout("", "[grow]", "[][grow]"));
 
 		scrollPane = new JScrollPane();
-		jpRightTop.add(scrollPane, "cell 0 0,grow");
+		jpRightTop.add(scrollPane, "cell 0 0 1 2,grow");
 
 		jpQuestionList = new JPanel();
 		scrollPane.setViewportView(jpQuestionList);
 		jpQuestionList.setLayout(new MigLayout("", "[]", "[]"));
-		jpRight.add(jbDelete, "cell 0 1,grow");
-		jpRight.add(jbSave, "cell 1 1,grow");
+		jpRight.add(jbDelete, "cell 0 2,grow");
+		jpRight.add(jbSave, "cell 1 2,grow");
 
 		jtpTabs = new JTabbedPane();
 		jpLeft.add(jtpTabs, "grow");
@@ -104,6 +121,11 @@ public class GUI {
 		mainPanel.add(jpLeft, "grow");
 		mainPanel.add(jpMiddle, "grow");
 		mainPanel.add(jpRight, "grow");
+		
+		btnNewButton = new JButton("generate file");
+		btnNewButton.setForeground(Color.GREEN);
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 30));
+		jpRight.add(btnNewButton, "cell 0 3 2 1,grow");
 
 		addActionListeners();
 
@@ -141,18 +163,8 @@ public class GUI {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-
-				StringBuilder sbGiftFormat = new StringBuilder();
-				String title = setTitle(jpTab2.convert(jpTab2.getJtfTitle()
-						.getText()));
-				String question = setQuestion(jpTab2.convert(jpTab2
-						.getJtaQuestion().getText()));
-				String correctAnswer = setCorrectAnswer(jpTab2.correctAnswer());
-				String wrongAnswers = setAnswers(jpTab2.wrongAnswers());
-				sbGiftFormat.append(title + question + " {\n" + correctAnswer
-						+ wrongAnswers + "}");
-
-				jtaPreview.setText(sbGiftFormat.toString());
+				
+				previewTab2Code();
 
 			}
 		});
@@ -193,12 +205,15 @@ public class GUI {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				String name = "default";
 				if (jtpTabs.getSelectedIndex() == 0) {
 					QTrueFalse qtf = new QTrueFalse();
 					qtf.setTitle(jpTab1.getName());
 					qtf.setQuestion(jpTab1.getQuestion());
 					qtf.setValue(jpTab1.getSelectedRadioButtonText());
 
+					name = jpTab1.getName(); // Q name appears on the right
+					
 					qContent.add(qtf);
 				} else if (jtpTabs.getSelectedIndex() == 1) {
 					QMultipleChoice qmc = new QMultipleChoice();
@@ -217,11 +232,14 @@ public class GUI {
 					qmc.setIncorrectAnswers(jpTab2.getAnswer());
 					qmc.setIncorrectComments(jpTab2.getComments());
 					qmc.setIncorrectPercent(jpTab2.getPercent());
+					qmc.setContent(jtaPreview.getText());
+					
+					name = jpTab2.getJtfTitle().getText(); // Q name appears on the right
 
 					qContent.add(qmc);
 				}
 
-				JRadioButton q = new JRadioButton("Q1");
+				JRadioButton q = new JRadioButton(name);
 				q.addActionListener(new ActionListener() {
 
 					@Override
@@ -240,6 +258,8 @@ public class GUI {
 						} else if (qContent.get(index).getClass() == QMultipleChoice.class) {
 							QMultipleChoice tempQ = (QMultipleChoice) qContent
 									.get(index);
+							int rows = tempQ.getIncorrectAnswers().size(); // returns the size of the table
+							createTable(rows);
 							jtpTabs.setSelectedIndex(1);
 							jpTab2.setTitle(tempQ.getTitle());
 							jpTab2.setQuestion(tempQ.getQuestion());
@@ -250,14 +270,14 @@ public class GUI {
 							jpTab2.setAnswer(tempQ.getIncorrectAnswers());
 							jpTab2.setComments(tempQ.getIncorrectComments());
 							jpTab2.setPercent(tempQ.getIncorrectPercent());
+							jtaPreview.setText(tempQ.getContent());
 						}
 
 						
 						mainPanel.repaint();
 						mainPanel.revalidate();
-					}
-
-					
+						
+					}					
 				});
 				clearTab2();
 				bgAll.add(q);
@@ -281,6 +301,82 @@ public class GUI {
 
 			}
 		});
+		jbSave.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int index = getSelectedIndex();
+				String name = "default";
+				if (jtpTabs.getSelectedIndex() == 0) {
+					QTrueFalse qtf = new QTrueFalse();
+					qtf.setTitle(jpTab1.getName());
+					qtf.setQuestion(jpTab1.getQuestion());
+					qtf.setValue(jpTab1.getSelectedRadioButtonText());
+
+					name = jpTab1.getName(); // Q name appears on the right
+					
+					qContent.set(index, qtf);
+				} else if (jtpTabs.getSelectedIndex() == 1) {
+					QMultipleChoice qmc = new QMultipleChoice();
+					qmc.setTitle(jpTab2.getJtfTitle().getText());
+					qmc.setQuestion(jpTab2.getJtaQuestion().getText());
+					String correctAnswer = jpTab2.getTable_1().getModel()
+							.getValueAt(0, 0).toString();
+					if (correctAnswer == null)
+						correctAnswer = "";
+					String correctComment = jpTab2.getTable_1().getModel()
+							.getValueAt(0, 1).toString();
+					if (correctComment == null)
+						correctComment = "";
+					qmc.setCorrectAnswer(correctAnswer);
+					qmc.setCorrectComment(correctComment);
+					qmc.setIncorrectAnswers(jpTab2.getAnswer());
+					qmc.setIncorrectComments(jpTab2.getComments());
+					qmc.setIncorrectPercent(jpTab2.getPercent());
+					previewTab2Code();
+					qmc.setContent(jtaPreview.getText());
+					updateName(); // Q name appears on the right
+
+					qContent.set(index, qmc);
+				}
+				
+				repaintQuestions();
+			}
+		});
+	}
+	
+	protected void updateName() {
+		for (Enumeration<AbstractButton> buttons = bgAll.getElements(); buttons
+				.hasMoreElements();) {
+			AbstractButton button = buttons.nextElement();
+
+			if (button.isSelected()) {
+				button.setText(jpTab2.getJtfTitle().getText());
+			}
+		}
+	}
+
+	protected void previewTab2Code() {
+		StringBuilder sbGiftFormat = new StringBuilder();
+		String title = setTitle(jpTab2.convert(jpTab2.getJtfTitle()
+				.getText()));
+		String question = setQuestion(jpTab2.convert(jpTab2
+				.getJtaQuestion().getText()));
+		String correctAnswer = setCorrectAnswer(jpTab2.correctAnswer());
+		String wrongAnswers = setAnswers(jpTab2.wrongAnswers());
+		sbGiftFormat.append(title + question + " {\n" + correctAnswer
+				+ wrongAnswers + "}");
+
+		jtaPreview.setText(sbGiftFormat.toString());
+		
+	}
+
+	private void createTable(int rows) {
+
+		removeAllTableRows();
+		for (int i=0; i<rows; i++) {
+			addOneRow();
+		}
 	}
 
 	protected int getSelectedIndex() {
@@ -319,7 +415,6 @@ public class GUI {
 	}
 
 	private void addOneRow() {
-		// TODO Auto-generated method stub
 		DefaultTableModel model = (DefaultTableModel) jpTab2.getTable().getModel();
 		model.addRow(new Object[] {"","",""});
 		
@@ -329,7 +424,7 @@ public class GUI {
 		int rowCount = jpTab2.getTable().getModel().getRowCount();
 		for (int i=0; i<rowCount; i++){
 			DefaultTableModel model = (DefaultTableModel) jpTab2.getTable().getModel();
-			model.removeRow(i);
+			model.removeRow(0);
 		}
 		System.out.println("Row count "+rowCount);
 		

@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.awt.Font;
 
 public class Tab4Frame extends JPanel {
 	private JTextField jtfTitle;
@@ -26,30 +27,30 @@ public class Tab4Frame extends JPanel {
 	private ArrayList<String> comments;
 
 	public Tab4Frame() {
-		setLayout(new MigLayout("", "[grow][grow]", "[][][][][][][][][]"));
+		setLayout(new MigLayout("", "[grow][][grow]", "[][][][][][][][][]"));
 		
-		JLabel lblTitle = new JLabel("Title:");
-		add(lblTitle, "cell 0 0 2 1");
+		JLabel lblTitle = new JLabel("-= title =-");
+		add(lblTitle, "cell 1 0 2 1,alignx center");
 		
 		jtfTitle = new JTextField();
-		add(jtfTitle, "cell 0 1 2 1,growx");
+		add(jtfTitle, "cell 1 1 2 1,growx");
 		jtfTitle.setColumns(10);
 		
-		JLabel lblQuestion = new JLabel("Question:");
-		add(lblQuestion, "cell 0 2");
+		JLabel lblQuestion = new JLabel("-= question =-");
+		add(lblQuestion, "cell 1 2 2 1,alignx center");
 		
 		JScrollPane scrollPane = new JScrollPane();
-		add(scrollPane, "cell 0 3 2 1,grow");
+		add(scrollPane, "cell 1 3 2 1,grow");
 		
 		jtaQuestion = new JTextArea();
 		jtaQuestion.setRows(5);
 		scrollPane.setViewportView(jtaQuestion);
 		
-		JLabel lblAnswer = new JLabel("Answer:");
-		add(lblAnswer, "cell 0 4 2 1");
+		JLabel lblAnswer = new JLabel("-= answer =-");
+		add(lblAnswer, "cell 1 4 2 1,alignx center");
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		add(scrollPane_1, "cell 0 5 2 1,grow");
+		add(scrollPane_1, "cell 1 5 2 1,grow");
 		
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
@@ -73,16 +74,15 @@ public class Tab4Frame extends JPanel {
 		scrollPane_1.setMaximumSize(new Dimension(1000, 75));
 		scrollPane_1.setViewportView(table);
 		
-		JButton btnDelete = new JButton("Delete");
+		JButton btnDelete = new JButton("<- del row ->");
 		btnDelete.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				removeSelectedFromTable(table);
 			}
 		});
-		add(btnDelete, "flowx,cell 1 6,alignx right");
 		
-		JButton btnAdd = new JButton("Add");
+		JButton btnAdd = new JButton("<- add row ->");
 		btnAdd.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -90,10 +90,16 @@ public class Tab4Frame extends JPanel {
 				model.addRow(new Object[] {});
 			}
 		});
-		add(btnAdd, "cell 1 6,alignx right");
+		add(btnAdd, "flowx,cell 2 6,alignx right");
+		add(btnDelete, "cell 2 6,alignx right");
 		
-		btnPreview = new JButton("Preview");
-		add(btnPreview, "cell 0 8");
+		JButton button = new JButton("<- clear all ->");
+		button.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		add(button, "cell 1 7,growx");
+		
+		btnPreview = new JButton("<- preview ->");
+		btnPreview.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		add(btnPreview, "cell 1 8,growx");
 
 	}
 	
