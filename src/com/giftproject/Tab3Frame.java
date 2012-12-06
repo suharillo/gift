@@ -81,7 +81,13 @@ public class Tab3Frame extends JPanel {
 
 		JButton button = new JButton("<- clear all ->");
 		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
+				setTitle("");
+				setQuestion("");
+				
+				setRows(2);
+				repaint();
+				revalidate();
 			}
 		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -91,6 +97,16 @@ public class Tab3Frame extends JPanel {
 		btnPreview.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		add(btnPreview, "cell 1 8,growx");
 
+	}
+	
+	public void setRows(int rowCount) {
+		int rows = table.getModel().getRowCount();
+		DefaultTableModel model = (DefaultTableModel) this.table.getModel();
+		for (int i=0; i<rows; i++)
+			model.removeRow(0);
+		for (int i=0; i<rowCount; i++)
+			model.addRow(new Object[] {});
+		
 	}
 
 	public void removeSelectedFromTable(JTable from) {
@@ -186,6 +202,37 @@ public class Tab3Frame extends JPanel {
 		}
 		return answer;
 
+	}
+
+	public JTable getTable() {
+		return table;
+	}
+
+	public void setTable(JTable table) {
+		this.table = table;
+	}
+	
+	public void setTitle(String title) {
+		jtfTitle.setText(title);
+		
+	}
+	
+	public void setQuestion(String s) {
+		jtaQuestion.setText(s);
+	}
+	
+	public void setAnswer1(ArrayList<String> answer) {
+
+		for(int i=0; i<answer.size(); i++) {
+			table.getModel().setValueAt(answer.get(i), i, 0);
+		}
+	}
+	
+	public void setAnswer2(ArrayList<String> answer) {
+
+		for(int i=0; i<answer.size(); i++) {
+			table.getModel().setValueAt(answer.get(i), i, 1);
+		}
 	}
 
 }

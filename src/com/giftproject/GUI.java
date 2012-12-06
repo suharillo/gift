@@ -156,23 +156,15 @@ public class GUI {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				previewTa4Code();
+				previewTab3Code();
 			}
 		});
 
 		jpTab4.getBtnPreview().addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				StringBuilder sbGiftFormat = new StringBuilder();
-				String title = setTitle(jpTab4.convert(jpTab4.getJtfTitle()
-						.getText()));
-				String question = setQuestion(jpTab4.convert(jpTab4
-						.getJtaQuestion().getText()));
-				String answers = setAnswers(jpTab4.answers());
-				sbGiftFormat.append(title + question + " {\n" + answers + "}");
-
-				jtaPreview.setText(sbGiftFormat.toString());
+			public void actionPerformed(ActionEvent arg0) {			
+				previewTab4Code();				
 			}
 		});
 
@@ -186,12 +178,10 @@ public class GUI {
 					qtf.setTitle(jpTab1.getTitle());
 					qtf.setQuestion(jpTab1.getQuestion());
 					qtf.setValue(jpTab1.getSelectedRadioButtonText());
-					qtf.setContent(jtaPreview.getText());
-
-					name = jpTab1.getTitle(); // Q name appears on the right
-
+					previewTab1Code();
+					qtf.setContent(jtaPreview.getText());					
+					name = jpTab1.getTitle(); // Q name appears on the right			
 					qContent.add(qtf);
-
 					clearTab1();
 				} else if (jtpTabs.getSelectedIndex() == 1) {
 					QMultipleChoice qmc = new QMultipleChoice();
@@ -209,14 +199,11 @@ public class GUI {
 					qmc.setCorrectComment(correctComment);
 					qmc.setIncorrectAnswers(jpTab2.getAnswer());
 					qmc.setIncorrectComments(jpTab2.getComments());
-					qmc.setIncorrectPercent(jpTab2.getPercent());
+					qmc.setIncorrectPercent(jpTab2.getPercent());				
+					previewTab2Code();
 					qmc.setContent(jtaPreview.getText());
-
-					name = jpTab2.getJtfTitle().getText(); // Q name appears on
-															// the right
-
+					name = jpTab2.getJtfTitle().getText(); // Q name appears on the right			
 					qContent.add(qmc);
-
 					clearTab2();
 				} else if (jtpTabs.getSelectedIndex() == 2) {
 					QMatching qmt= new QMatching();
@@ -224,12 +211,23 @@ public class GUI {
 					qmt.setQuestion(jpTab3.getJtaQuestion().getText());
 					qmt.setAnswers1(jpTab3.getAnswer1());
 					qmt.setAnswers2(jpTab3.getAnswer2());
-					qmt.setContent(jtaPreview.getText());
-					
+					previewTab3Code();
+					qmt.setContent(jtaPreview.getText());					
 					name = jpTab3.getJtfTitle().getText(); // Q name appears on
-					// the right
-					
-					qContent.add(qmt);
+					qContent.add(qmt);				
+					clearTab3();
+				} else if (jtpTabs.getSelectedIndex() == 3) {
+					QShort qsh = new QShort();
+					qsh.setTitle(jpTab4.getJtfTitle().getText());
+					qsh.setQuestion(jpTab4.getJtaQuestion().getText());
+					qsh.setAnswers(jpTab4.getAnswer());
+					qsh.setComments(jpTab4.getComments());
+					qsh.setPercent(jpTab4.getPercent());
+					previewTab4Code();
+					qsh.setContent(jtaPreview.getText());					
+					name = jpTab4.getJtfTitle().getText(); // Q name appears on				
+					qContent.add(qsh);					
+					clearTab4();
 				}
 
 				JRadioButton q = new JRadioButton(name);
@@ -259,7 +257,7 @@ public class GUI {
 																			// of
 																			// the
 																			// table
-							createTable(rows);
+							createTab2AnswerTable(rows);
 							jtpTabs.setSelectedIndex(1);
 							jpTab2.setTitle(tempQ.getTitle());
 							jpTab2.setQuestion(tempQ.getQuestion());
@@ -272,14 +270,39 @@ public class GUI {
 							jpTab2.setComments(tempQ.getIncorrectComments());
 							jpTab2.setPercent(tempQ.getIncorrectPercent());
 							jtaPreview.setText(tempQ.getContent());
+							
+						} else if (qContent.get(index).getClass() == QMatching.class) {
+							QMatching tempQ = (QMatching) qContent.get(index);
+							int rows = tempQ.getAnswers1().size();
+							
+							createTab3AnswerTable(rows);
+							jtpTabs.setSelectedIndex(2);
+							jpTab3.setTitle(tempQ.getTitle());
+							jpTab3.setQuestion(tempQ.getQuestion());
+							jpTab3.setAnswer1(tempQ.getAnswers1());
+							jpTab3.setAnswer2(tempQ.getAnswers2());
+							jtaPreview.setText(tempQ.getContent());
+							
+						} else if (qContent.get(index).getClass() == QShort.class) {
+							QShort tempQ = (QShort) qContent.get(index);
+							int rows = tempQ.getAnswers().size();
+							
+							createTab4AnswerTable(rows);
+							jtpTabs.setSelectedIndex(3);
+							jpTab4.setTitle(tempQ.getTitle());
+							jpTab4.setQuestion(tempQ.getQuestion());
+							jpTab4.setAnswer(tempQ.getAnswers());
+							jpTab4.setComments(tempQ.getComments());
+							jpTab4.setPercent(tempQ.getPercent());
+							jtaPreview.setText(tempQ.getContent());
 						}
 
 						mainPanel.repaint();
 						mainPanel.revalidate();
 
-					} else if (qContent) {
-						
 					}
+
+					
 				});
 
 				bgAll.add(q);
@@ -345,14 +368,53 @@ public class GUI {
 					updateTab2Radiobutton(); // Q name appears on the right
 
 					qContent.set(index, qmc);
+				} else if (jtpTabs.getSelectedIndex() == 2) {
+					QMatching qmt = new QMatching();
+					qmt.setTitle(jpTab3.getJtfTitle().getText());
+					qmt.setQuestion(jpTab3.getJtaQuestion().getText());
+					qmt.setAnswers1(jpTab3.getAnswer1());
+					qmt.setAnswers2(jpTab3.getAnswer2());
+					
+					previewTab3Code();
+					qmt.setContent(jtaPreview.getText());
+					updateTab3Radiobutton(); // Q name appears on the right
+					
+					qContent.set(index, qmt);
+				} else if (jtpTabs.getSelectedIndex() == 3) {
+					QShort qsh = new QShort();
+					qsh.setTitle(jpTab4.getJtfTitle().getText());
+					qsh.setQuestion(jpTab4.getJtaQuestion().getText());
+					qsh.setAnswers(jpTab4.getAnswer());
+					qsh.setComments(jpTab4.getComments());
+					qsh.setPercent(jpTab4.getPercent());
+					
+					previewTab4Code();
+					qsh.setContent(jtaPreview.getText());
+					updateTab4Radiobutton(); // Q name appears on the right
+					
+					qContent.set(index, qsh);
 				}
 
 				repaintQuestions();
 			}
+
 		});
 	}
 
-	protected void previewTa4Code() {
+	protected void previewTab4Code() {
+		StringBuilder sbGiftFormat = new StringBuilder();
+		String title = setTitle(jpTab4.convert(jpTab4.getJtfTitle()
+				.getText()));
+		String question = setQuestion(jpTab4.convert(jpTab4
+				.getJtaQuestion().getText()));
+		String answers = setAnswers(jpTab4.answers());
+		sbGiftFormat.append(title + question + " {\n" + answers + "}");
+
+		jtaPreview.setText(sbGiftFormat.toString());
+		
+	}
+
+	protected void previewTab3Code() {
 		StringBuilder sbGiftFormat = new StringBuilder();
 		String title = setTitle(jpTab3.convert(jpTab3.getJtfTitle()
 				.getText()));
@@ -384,6 +446,28 @@ public class GUI {
 
 			if (button.isSelected()) {
 				button.setText(jpTab2.getJtfTitle().getText());
+			}
+		}
+	}
+	
+	protected void updateTab3Radiobutton() {
+		for (Enumeration<AbstractButton> buttons = bgAll.getElements(); buttons
+				.hasMoreElements();) {
+			AbstractButton button = buttons.nextElement();
+
+			if (button.isSelected()) {
+				button.setText(jpTab3.getJtfTitle().getText());
+			}
+		}
+	}
+	
+	private void updateTab4Radiobutton() {
+		for (Enumeration<AbstractButton> buttons = bgAll.getElements(); buttons
+				.hasMoreElements();) {
+			AbstractButton button = buttons.nextElement();
+
+			if (button.isSelected()) {
+				button.setText(jpTab4.getJtfTitle().getText());
 			}
 		}
 	}
@@ -419,12 +503,61 @@ public class GUI {
 
 	
 
-	private void createTable(int rows) {
+	private void createTab2AnswerTable(int rows) {
 
-		removeAllTableRows();
+		removeAllTab2TableRows();
 		for (int i = 0; i < rows; i++) {
-			addOneRow();
+			addOneRowTab2();
 		}
+	}
+	private void createTab3AnswerTable(int rows) {
+
+		removeAllTab3TableRows();
+		for (int i = 0; i < rows; i++) {
+			addOneRowTab3();
+		}
+	}
+	
+	private void createTab4AnswerTable(int rows) {
+		removeAllTab4TableRows();
+		for (int i = 0; i < rows; i++) {
+			addOneRowTab4();
+		}
+	} 
+
+	private void addOneRowTab4() {
+		DefaultTableModel model = (DefaultTableModel) jpTab4.getTable()
+				.getModel();
+		model.addRow(new Object[] { "", "", "" });
+		
+	}
+
+	private void removeAllTab4TableRows() {
+		int rowCount = jpTab4.getTable().getModel().getRowCount();
+		for (int i = 0; i < rowCount; i++) {
+			DefaultTableModel model = (DefaultTableModel) jpTab4.getTable()
+					.getModel();
+			model.removeRow(0);
+		}
+		
+	}
+
+	private void addOneRowTab3() {
+		DefaultTableModel model = (DefaultTableModel) jpTab3.getTable()
+				.getModel();
+		model.addRow(new Object[] { "", "" });
+		
+	}
+
+	private void removeAllTab3TableRows() {
+		int rowCount = jpTab3.getTable().getModel().getRowCount();
+		for (int i = 0; i < rowCount; i++) {
+			DefaultTableModel model = (DefaultTableModel) jpTab3.getTable()
+					.getModel();
+			model.removeRow(0);
+		}
+		System.out.println("Row count " + rowCount);
+		
 	}
 
 	protected int getSelectedIndex() {
@@ -451,14 +584,26 @@ public class GUI {
 		jpQuestionList.repaint();
 		jpQuestionList.revalidate();
 	}
+	
+	protected void clearTab4() {
+		jpTab4.setTitle("");
+		jpTab4.setQuestion("");
+		jpTab4.clearAnswer();
+		
+	}
+
+	protected void clearTab3() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	private void clearTab2() {
 		jpTab2.setTitle("");
 		jpTab2.setQuestion("");
 		jpTab2.setCorrectAnswer("");
 		jpTab2.setCorrectComment("");
-		removeAllTableRows();
-		addOneRow();
+		removeAllTab2TableRows();
+		addOneRowTab2();
 
 	}
 
@@ -468,14 +613,14 @@ public class GUI {
 
 	}
 
-	private void addOneRow() {
+	private void addOneRowTab2() {
 		DefaultTableModel model = (DefaultTableModel) jpTab2.getTable()
 				.getModel();
 		model.addRow(new Object[] { "", "", "" });
 
 	}
 
-	private void removeAllTableRows() {
+	private void removeAllTab2TableRows() {
 		int rowCount = jpTab2.getTable().getModel().getRowCount();
 		for (int i = 0; i < rowCount; i++) {
 			DefaultTableModel model = (DefaultTableModel) jpTab2.getTable()

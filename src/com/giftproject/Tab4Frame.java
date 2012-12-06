@@ -21,10 +21,6 @@ public class Tab4Frame extends JPanel {
 	private JTable table;
 	private JButton btnPreview;
 	private JTextArea jtaQuestion;
-	
-	private ArrayList<String> answer;
-	private ArrayList<String> percent;
-	private ArrayList<String> comments;
 
 	public Tab4Frame() {
 		setLayout(new MigLayout("", "[grow][][grow]", "[][][][][][][][][]"));
@@ -114,9 +110,6 @@ public class Tab4Frame extends JPanel {
 	public String answers() {
 
 		String answers = "";
-		answer = new ArrayList<String>();
-		comments = new ArrayList<String>();
-		percent = new ArrayList<String>();
 
 		for (int i = 0; i < table.getRowCount(); i++) {
 
@@ -134,13 +127,9 @@ public class Tab4Frame extends JPanel {
 			ans = convert(ans);
 			com = convert(com);
 
-			answer.add(ans);
-			percent.add(per);
-			comments.add(com);
-
 			answers = answers + "="
-					+ displayPercentage(percent.get(i)) + answer.get(i)
-					+ displayComments(comments.get(i)) + " \n";
+					+ displayPercentage(per) + ans
+					+ displayComments(com) + " \n";
 
 		}
 
@@ -198,6 +187,91 @@ public class Tab4Frame extends JPanel {
 
 	public void setJtaQuestion(JTextArea jtaQuestion) {
 		this.jtaQuestion = jtaQuestion;
+	}
+	
+	public ArrayList<String> getAnswer() {
+		ArrayList<String> answer = new ArrayList<String>();
+		for (int i=0; i<table.getModel().getRowCount();i++) {
+			if(!((table.getModel().getValueAt(i, 0))==null)) {
+				answer.add(table.getModel().getValueAt(i, 0).toString());
+			}
+			else
+				answer.add("");
+		}
+		return answer;
+	}
+	
+	public ArrayList<String> getPercent() {
+		ArrayList<String> percent = new ArrayList<String>();
+		for (int i=0; i<table.getModel().getRowCount();i++) {
+			if(!((table.getModel().getValueAt(i, 1))==null)) {
+				String percentValue = table.getModel().getValueAt(i, 1).toString();
+				percent.add(percentValue);
+			}
+			else
+				percent.add("");
+			
+		}
+		return percent;
+	}
+	
+	public ArrayList<String> getComments() {
+		ArrayList<String> comments = new ArrayList<String>();
+		for (int i=0; i<table.getModel().getRowCount();i++) {
+			if(!((table.getModel().getValueAt(i, 2))==null)) {
+				comments.add(table.getModel().getValueAt(i, 2).toString());
+			}
+			else
+				comments.add("");
+		}
+		return comments;
+	}
+	
+	public void setAnswer(ArrayList<String> answer) {
+
+		for(int i=0; i<answer.size(); i++) {
+			table.getModel().setValueAt(answer.get(i), i, 0);
+		}
+	}
+	
+	public void setPercent(ArrayList<String> percent) {
+		for(int i=0; i<percent.size(); i++) {
+			table.getModel().setValueAt(percent.get(i), i, 1);
+		}
+	}
+	
+	public void setComments(ArrayList<String> comments) {
+
+		for(int i=0; i<comments.size(); i++) {
+			table.getModel().setValueAt(comments.get(i), i, 2);
+		}
+	}
+
+	public void setTitle(String string) {
+		jtfTitle.setText(string);
+		
+	}
+
+	public void setQuestion(String string) {
+		jtaQuestion.setText(string);
+		
+	}
+
+	public void clearAnswer() {
+		DefaultTableModel model = (DefaultTableModel) this.table.getModel();
+		int rows = model.getRowCount();
+		for (int i = 0; i < rows; i++) {
+			model.removeRow(0);
+		}
+		model.addRow(new Object[] { "", "", "" });
+	}
+
+	public JTable getTable() {
+		return table;
+	}
+
+	public void setTable(JTable table) {
+		this.table = table;
 	}
 
 }
