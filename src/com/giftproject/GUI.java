@@ -24,6 +24,12 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class GUI {
 
@@ -45,6 +51,8 @@ public class GUI {
 	private Tab2Frame jpTab2;
 	private Tab3Frame jpTab3;
 	private Tab4Frame jpTab4;
+	private Tab5Frame jpTab5;
+	private Tab6Frame jpTab6;
 
 	public JTextArea jtaPreview;
 	private JButton jbSubmit;
@@ -54,7 +62,7 @@ public class GUI {
 	private JPanel jpQuestionList;
 	private JLabel lblAllQuestions;
 	private JLabel lblPreviewTitle;
-	private JButton btnNewButton;
+	private JButton btnGenerateFile;
 
 	public GUI() {
 
@@ -67,8 +75,7 @@ public class GUI {
 
 		jpLeft = new JPanel(new MigLayout("", "[grow]", "[grow]"));
 		jpMiddle = new JPanel(new MigLayout("", "[grow]", "[][grow][151]"));
-		jpRight = new JPanel(new MigLayout("", "[grow][]",
-				"[][grow][100px:n:100px][45px]"));
+		jpRight = new JPanel(new MigLayout("", "[grow][]", "[][grow][100px:n:100px][45px]"));
 		jpLeft.setBorder(BorderFactory.createLineBorder(Color.black));
 		jpMiddle.setBorder(BorderFactory.createLineBorder(Color.black));
 		jpRight.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -88,7 +95,7 @@ public class GUI {
 		jpRightTop.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		lblAllQuestions = new JLabel("-= questions =-");
-		jpRight.add(lblAllQuestions, "cell 0 0");
+		jpRight.add(lblAllQuestions, "cell 0 0 2 1,alignx center");
 		jpRight.add(jpRightTop, "cell 0 1 2 1,grow");
 		jpRightTop.setLayout(new MigLayout("", "[grow]", "[][grow]"));
 
@@ -109,11 +116,15 @@ public class GUI {
 		jpTab2 = new Tab2Frame();
 		jpTab3 = new Tab3Frame();
 		jpTab4 = new Tab4Frame();
+		jpTab5 = new Tab5Frame();
+		jpTab6 = new Tab6Frame();
 
 		jtpTabs.addTab("True/False", jpTab1);
 		jtpTabs.addTab("Multiple Choice", jpTab2);
 		jtpTabs.addTab("Matching", jpTab3);
 		jtpTabs.addTab("Short", jpTab4);
+		jtpTabs.addTab("Essay", jpTab5);
+		jtpTabs.addTab("Description", jpTab6);
 
 		mainPanel.add(jpLeft, "grow");
 		mainPanel.add(jpMiddle, "grow");
@@ -123,10 +134,61 @@ public class GUI {
 		jbDelete.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		jpRight.add(jbDelete, "cell 1 2,grow");
 
-		btnNewButton = new JButton("generate file");
-		btnNewButton.setForeground(Color.GREEN);
-		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 30));
-		jpRight.add(btnNewButton, "cell 0 3 2 1,grow");
+		btnGenerateFile = new JButton("generate gift file");
+		btnGenerateFile.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					
+					File f = new File("out.txt");
+					if (f.exists())
+						f.delete();
+					
+					File ff = new File("out.txt");
+					FileWriter fstream = new FileWriter(ff, true);
+					BufferedWriter out = new BufferedWriter(fstream);
+					String text = "";
+					for (Object o: qContent) {
+						if (o.getClass() == QTrueFalse.class) {
+							QTrueFalse tempQ = (QTrueFalse) o;
+							text = tempQ.getContent();
+						} else if (o.getClass() == QMultipleChoice.class) {
+							QMultipleChoice tempQ = (QMultipleChoice) o;
+							text = tempQ.getContent();
+						} else if (o.getClass() == QMatching.class) {
+							QMatching tempQ = (QMatching) o;
+							text = tempQ.getContent();
+						} else if (o.getClass() == QShort.class) {
+							QShort tempQ = (QShort) o;
+							text = tempQ.getContent();
+						} else if (o.getClass() == QEssay.class) {
+							QEssay tempQ = (QEssay) o;
+							text = tempQ.getContent();
+						} else if (o.getClass() == QDescription.class) {
+							QDescription tempQ = (QDescription) o;
+							text = tempQ.getContent();
+						} else;
+						
+						String[] tokens = text.split("\n");
+						for (int i=0; i<tokens.length; i++) {
+							out.append(tokens[i]);
+							out.newLine();
+						}
+						
+						out.newLine();
+					}
+									
+					out.close();
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		btnGenerateFile.setForeground(Color.GREEN);
+		btnGenerateFile.setFont(new Font("Tahoma", Font.BOLD, 30));
+		jpRight.add(btnGenerateFile, "cell 0 3 2 1,grow");
 
 		addActionListeners();
 
@@ -165,6 +227,22 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {			
 				previewTab4Code();				
+			}
+		});
+		
+		jpTab5.getJbPreview().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {			
+				previewTab5Code();				
+			}
+		});
+		
+		jpTab6.getJbPreview().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {			
+				previewTab6Code();				
 			}
 		});
 
@@ -228,7 +306,25 @@ public class GUI {
 					name = jpTab4.getJtfTitle().getText(); // Q name appears on				
 					qContent.add(qsh);					
 					clearTab4();
-				}
+				} else if (jtpTabs.getSelectedIndex() == 4) {
+					QEssay qes = new QEssay();
+					qes.setTitle(jpTab5.getTitle());
+					qes.setQuestion(jpTab5.getQuestion());
+					previewTab5Code();
+					qes.setContent(jtaPreview.getText());
+					name = jpTab5.getTitle(); // Q name appears on the right			
+					qContent.add(qes);
+					clearTab5();
+				} else if (jtpTabs.getSelectedIndex() == 5) {
+					QDescription qes = new QDescription();
+					qes.setTitle(jpTab6.getTitle());
+					qes.setQuestion(jpTab6.getQuestion());
+					previewTab6Code();
+					qes.setContent(jtaPreview.getText());
+					name = jpTab6.getTitle(); // Q name appears on the right			
+					qContent.add(qes);
+					clearTab6();
+				} else;
 
 				JRadioButton q = new JRadioButton(name);
 				q.addActionListener(new ActionListener() {
@@ -295,6 +391,20 @@ public class GUI {
 							jpTab4.setComments(tempQ.getComments());
 							jpTab4.setPercent(tempQ.getPercent());
 							jtaPreview.setText(tempQ.getContent());
+						} else if (qContent.get(index).getClass() == QEssay.class) {
+							QEssay tempQ = (QEssay) qContent.get(index);
+							jtpTabs.setSelectedIndex(4);
+							jpTab5.setTitle(tempQ.getTitle());
+							jpTab5.setQuestion(tempQ.getQuestion());
+							jtaPreview.setText(tempQ.getContent());
+							
+						} else if (qContent.get(index).getClass() == QDescription.class) {
+							QDescription tempQ = (QDescription) qContent.get(index);
+							jtpTabs.setSelectedIndex(5);
+							jpTab6.setTitle(tempQ.getTitle());
+							jpTab6.setQuestion(tempQ.getQuestion());
+							jtaPreview.setText(tempQ.getContent());
+							
 						}
 
 						mainPanel.repaint();
@@ -342,8 +452,6 @@ public class GUI {
 					qtf.setContent(jtaPreview.getText());
 					updateTab1Radiobutton();
 
-					name = jpTab1.getName(); // Q name appears on the right
-
 					qContent.set(index, qtf);
 				} else if (jtpTabs.getSelectedIndex() == 1) {
 					QMultipleChoice qmc = new QMultipleChoice();
@@ -380,6 +488,7 @@ public class GUI {
 					updateTab3Radiobutton(); // Q name appears on the right
 					
 					qContent.set(index, qmt);
+					
 				} else if (jtpTabs.getSelectedIndex() == 3) {
 					QShort qsh = new QShort();
 					qsh.setTitle(jpTab4.getJtfTitle().getText());
@@ -393,6 +502,27 @@ public class GUI {
 					updateTab4Radiobutton(); // Q name appears on the right
 					
 					qContent.set(index, qsh);
+				} else if (jtpTabs.getSelectedIndex() == 4) {
+					QEssay qtf = new QEssay();
+					qtf.setTitle(jpTab5.getTitle());
+					qtf.setQuestion(jpTab5.getQuestion());
+					
+					previewTab5Code();
+					qtf.setContent(jtaPreview.getText());
+					updateTab5Radiobutton();
+
+					qContent.set(index, qtf);
+					
+				}  else if (jtpTabs.getSelectedIndex() == 5) {
+					QDescription qtf = new QDescription();
+					qtf.setTitle(jpTab6.getTitle());
+					qtf.setQuestion(jpTab6.getQuestion());
+					
+					previewTab6Code();
+					qtf.setContent(jtaPreview.getText());
+					updateTab6Radiobutton();
+
+					qContent.set(index, qtf);
 				}
 
 				repaintQuestions();
@@ -471,6 +601,28 @@ public class GUI {
 			}
 		}
 	}
+	
+	private void updateTab5Radiobutton() {
+		for (Enumeration<AbstractButton> buttons = bgAll.getElements(); buttons
+				.hasMoreElements();) {
+			AbstractButton button = buttons.nextElement();
+
+			if (button.isSelected()) {
+				button.setText(jpTab5.getTitle());
+			}
+		}
+	}
+	
+	private void updateTab6Radiobutton() {
+		for (Enumeration<AbstractButton> buttons = bgAll.getElements(); buttons
+				.hasMoreElements();) {
+			AbstractButton button = buttons.nextElement();
+
+			if (button.isSelected()) {
+				button.setText(jpTab6.getTitle());
+			}
+		}
+	}
 
 	protected void previewTab1Code() {
 		StringBuilder sbGiftFormat = new StringBuilder();
@@ -480,6 +632,34 @@ public class GUI {
 		String strCorrect = jpTab1.getSelectedRadioButtonText();
 		String strTitle = "::" + strQName + "::";
 		String strAnswer = "{" + strCorrect + "}";
+
+		sbGiftFormat.append(strTitle + " " + strQContent + " " + strAnswer);
+
+		jtaPreview.setText(sbGiftFormat.toString());
+
+	}
+	
+	protected void previewTab5Code() {
+		StringBuilder sbGiftFormat = new StringBuilder();
+
+		String strQName = jpTab5.getTitle();
+		String strQContent = jpTab5.getQuestion() + " ";
+		String strTitle = "::" + strQName + "::";
+		String strAnswer = "{}";
+
+		sbGiftFormat.append(strTitle + " " + strQContent + " " + strAnswer);
+
+		jtaPreview.setText(sbGiftFormat.toString());
+
+	}
+	
+	protected void previewTab6Code() {
+		StringBuilder sbGiftFormat = new StringBuilder();
+
+		String strQName = jpTab6.getTitle();
+		String strQContent = jpTab6.getQuestion() + " ";
+		String strTitle = "::" + strQName + "::";
+		String strAnswer = "";
 
 		sbGiftFormat.append(strTitle + " " + strQContent + " " + strAnswer);
 
@@ -610,6 +790,18 @@ public class GUI {
 	protected void clearTab1() {
 		jpTab1.setTitle("");
 		jpTab1.setQuestion("");
+
+	}
+	
+	protected void clearTab5() {
+		jpTab5.setTitle("");
+		jpTab5.setQuestion("");
+
+	}
+	
+	protected void clearTab6() {
+		jpTab6.setTitle("");
+		jpTab6.setQuestion("");
 
 	}
 
